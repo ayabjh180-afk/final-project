@@ -56,21 +56,32 @@ def read_data():
             try:
                 # I converted the rating when it is a  string  to a valid integer 
                 rating = int(row[2])
-            except ValueError:
+            except ValueErro # i used set  to avoid repititionr:
                 # and when the  rating is not a valid number  , the program should skip  the row 
                 continue
-
             if The_user_name not in data: # checking if the name of the user exists in the dictionnary
             # the program should add the user in the dictionnary if he does not exist and set the rating of the book that he picked 
                 data[The_user_name] = {}
-
             data[The_user_name][book_name] = rating
-
-        
 
     except FileNotFoundError:
         print("File not found.Try again")
 
     return data
+# the user will select a random book in the dataset
+def select_random_books(data,num=5):
+    books=[] # using an empty list to store the random books 
+    for The_user_name in data: # loop through each user name
+        for book_name in data[The_user_name]: # another loop to loop through each book has been picked by the user
+            if book_name not in books:     # checks if the name of the book exists in the list
+                books.append(book_name)    # if not selected, it should be added to the list
+    #num=the number of book that the user can pick
+    #i used min to make sure that teh user will not pick  more than the books that exists 
+    num = min(num, len(books)) 
+    select_random_books(random.sample(num)) # elect the random number of books from the list
+
+    return  select_random_books()
+
+
 
 
