@@ -21,18 +21,18 @@ def create_file():
             writer = csv.writer(file)
 
         rows=[  ["The_user_name", "book_name", "rating"],
-                ["Abir", "To Kill a Mockingbird", "5"],
-                ["Aya", "1984", "4"],
+                ["Abir", "The last day", "5"],
+                ["Aya", "Above ground", "4"],
                 ["Diana", "The Hunger Games", "4"],
-                ["Charlie", "Brave New World", "5"],
-                ["Omar", "Dune", "4"],
-                ["Hibah", "1984", "5"],
-                ["sarah", "Dune", "4"],
-                ["Tom", "The Catcher in the Rye", "3"],
-                ["yehor", "Brave New World", "5"],
-                ["Anka", "1984", "2"],
-                ["sultan", "Pride and Prejudice", "5"],
-                ["Maggie", "Project Hail Mary", "5"],
+                ["Charlie", "Everyone but my self", "5"],
+                ["Omar", "The Kitte runner", "4"],
+                ["Hibah", "The lord of the rings", "5"],
+                ["sarah", "The ideal life", "4"],
+                ["Tom", "Your heart", "3"],
+                ["yehor", "It ends with us", "5"],
+                ["Anka", "Anti fragile", "2"],
+                ["sultan", "The culture map", "5"],
+                ["Maggie", "The mointain is you", "5"],
             ]
         writer.writerows(rows) #to write multiple rows into the CSV file at once.
         
@@ -56,7 +56,7 @@ def read_data():
             try:
                 # I converted the rating when it is a  string  to a valid integer 
                 rating = int(row[2])
-            except ValueErro # i used set  to avoid repititionr:
+            except ValueError 
                 # and when the  rating is not a valid number  , the program should skip  the row 
                 continue
             if The_user_name not in data: # checking if the name of the user exists in the dictionnary
@@ -83,5 +83,24 @@ def select_random_books(data,num=5):
     return  select_random_books()
 
 
+# this function will ask the user to rate these books from 1 to 5
+def collect_ratings(random_books):
+    The_user_rating={} # this empty dictionnary to store teh user ratings 
+    print("Rate these books from(1-5)")
+    for book_name in  random_books:
+        while True: # it keeps repeating until teh user enter a valid  rating
+            rating=int(input("Enter your rating:"))
+            if rating >=1 and rating<=5:            # to check that the rating is between 1 and 5 
+                print("Thank you")
+                The_user_rating [book_name]= rating
+                break
+            else:
+                print("Try again.The number is invalid")
+           
+    return  The_user_rating
 
 
+
+
+
+ 
