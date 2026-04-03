@@ -1,4 +1,6 @@
-#(Python Software Foundation, 2020)
+##IY499 Practical Programming Assignment
+##Example Project 2: Book Recommendation System#
+# (Python Software Foundation, 2020)
 import csv # to store and read data from the file 
 #(Python, 2025)
 import random # to pick random books so to not show the same book each time
