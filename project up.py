@@ -121,16 +121,15 @@ def find_similar_users(data,The_user_rating):
     return similarity
 #This function will suggest books to the user 
 
-def books_recommendation(data,similarity,Thw_user_rating):
-    recommended_books=[]
-    for books in 
-
-
-
-
-
-
-
+def books_recommendation(data,The_user_rating):
+    recommended_books=[]                     # this list to store the recommended books
+    similar=find_similar_users(data,The_user_rating) # stores  the result of the previous function 
+    for The_user_name in similar:  # to check the common books
+            if similar [The_user_name]<=1.5: # TO PICK similar users
+                for book_name in  data[The_user_name]:    # loop through all the books that exist in the data
+                    if book_name not in The_user_rating:  # check if the book exist in the books that the user rates
+                        if book_name not in recommended_books: # check if the book exist in the books that has been recommmended
+                            recommended_books.append(book_name)
 
     return recommended_books
 
