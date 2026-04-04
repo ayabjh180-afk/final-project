@@ -99,6 +99,8 @@ def collect_ratings(random_books):
            
     return  The_user_rating
 
+def find_similar_users():
+
 
 
 
