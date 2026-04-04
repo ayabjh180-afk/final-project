@@ -22,10 +22,10 @@ def create_file():
 
         rows=[  ["The_user_name", "book_name", "rating"],
                 ["Abir", "The last day", "5"],
-                ["Aya", "Above ground", "4"],
-                ["Diana", "The Hunger Games", "4"],
+                ["Aya", "It ends with us", "4"],
+                ["Diana", "The last day", "4"],
                 ["Charlie", "Everyone but my self", "5"],
-                ["Omar", "The Kitte runner", "4"],
+                ["Omar", "The culture map", "4"],
                 ["Hibah", "The lord of the rings", "5"],
                 ["sarah", "The ideal life", "4"],
                 ["Tom", "Your heart", "3"],
@@ -91,15 +91,51 @@ def collect_ratings(random_books):
         while True: # it keeps repeating until teh user enter a valid  rating
             rating=int(input("Enter your rating:"))
             if rating >=1 and rating<=5:            # to check that the rating is between 1 and 5 
-                print("Thank you")
+                print("Thank you :)")
                 The_user_rating [book_name]= rating
                 break
             else:
-                print("Try again.The number is invalid")
+                print(":( Try again.The number is invalid")
            
     return  The_user_rating
+#This function compares the ratings of the new user with the existing users by checking common books
+# calculates the difference between the users ratings.
+def find_similar_users(data,The_user_rating):
+    similarity={} # i create an empty dictionary to store the user name and  the similarity score
+    for The_user_name in data:
+        total=0   # to count the total difference
+        books_count=0 # to calculate how many common books 
+        for book_name in The_user_rating:  # to check the common books
+            if book_name in data[The_user_name]:
+                The_existinguser_rating=data[The_user_name][book_name]          #the rating of the existing user
+                The_newuser_rating=The_user_rating[book_name]    # the rating of the new user
+                # now the program will calculate the diference to see the similarity between two different users
+                difference=abs(The_existinguser_rating-The_newuser_rating) # abs avoid negative numbers
+                total+=difference # to add the difference
+                books_count+=1
+            
+        if books_count>0:   # to check if  there is some common books
+                The_avg = total / books_count              # this is to calculate the average difference of books
+                similarity[The_user_name]=The_avg          # then store the results in the dictionary that i create earllier
 
-def find_similar_users():
+    return similarity
+#This function will suggest books to the user 
+
+def books_recommendation(data,similarity,Thw_user_rating):
+    recommended_books=[]
+    for books in 
+
+
+
+
+
+
+
+
+    return recommended_books
+
+
+
 
 
 
