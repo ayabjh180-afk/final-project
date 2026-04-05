@@ -152,7 +152,19 @@ def book_visualization(data):
     The_avg_ratings={}                 # creating an empty dictionary to store the average of the ratings of books
     for book_name in total_ratings:    #loop through each book in total ratings of the dictionary
         The_avg_ratings[book_name]=total_ratings[book_name]/books_count[book_name]    # calculating the average
-   
+    sorted_books=sorted(The_avg_ratings.keys())      ## sort the books name alphabetically
+    books=[]                   # to store book names
+    ratings=[]                # to store books ratings        
+    for book_name in sorted_books: # looping through the sorted books 
+        books.append(book_name)     #add each book  to the books list
+        ratings.append(The_avg_ratings[book_name]) # add the average rating of books to the rating list
+    positions=range(len(books))           # to create the position of each book in the graph
+    plt.bar(positions,ratings)            # draws bars by using x and y  axis
+    plt.xticks(positions,books,rotation=45) # to replace the numbers withe book names
+    plt.xlabel("books in data")                         # label the x axis with as
+    plt.ylabel("The avearge rating")                          #label the y axis with as
+    plt.title("Book recommendation statistiques")                         # the title of the graph 
+    plt.show()                              # to show the final graph 
     
 
 
