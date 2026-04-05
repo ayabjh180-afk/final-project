@@ -137,6 +137,30 @@ def books_recommendation(data,The_user_rating):
 
 
 
+# this function help the user to see the statistiques of each book
+def book_visualization(data):
+    total_ratings={}     # This empty dictionary to store the total ratings of books  
+    books_count={}            # This empty dictionary to count how many times the book was rated
+    for The_user_name in data:   # looping through each user
+        for book_name in data[The_user_name]: # looping through the rated books by the each user
+            rating=data[The_user_name][book_name]
+            if book_name not in  total_ratings:         #check if the book does not exist in the total 
+                total_ratings[book_name]=0              # this initialization for the book appears for the first time in the data
+                books_count[book_name]=0
+            total_ratings[book_name]+=rating             # to calculate the total ratings of books
+            books_count[book_name]+=1                    # counting  how many times the books  has been rated
+    The_avg_ratings={}                 # creating an empty dictionary to store the average of the ratings of books
+    for book_name in total_ratings:    #loop through each book in total ratings of the dictionary
+        The_avg_ratings[book_name]=total_ratings[book_name]/books_count[book_name]    # calculating the average
+   
+    
+
+
+
+
+
+
+
 
 
 
