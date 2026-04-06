@@ -20,22 +20,28 @@ def create_file():
         # to write data in a correct way into a csv file
             writer = csv.writer(file)
 
-        rows=[  ["The_user_name", "book_name", "rating"],
-                ["Abir", "The last day", "5"],
-                ["Aya", "It ends with us", "4"],
-                ["Diana", "The last day", "4"],
-                ["Charlie", "Everyone but my self", "5"],
-                ["Omar", "The culture map", "4"],
-                ["Hibah", "The lord of the rings", "5"],
-                ["sarah", "The ideal life", "4"],
-                ["Tom", "Your heart", "3"],
-                ["yehor", "It ends with us", "5"],
-                ["Anka", "Anti fragile", "2"],
-                ["sultan", "The culture map", "5"],
-                ["Maggie", "The mointain is you", "5"],
-            ]
-        writer.writerows(rows) #to write multiple rows into the CSV file at once.
-        
+            rows=[  ["The_user_name", "book_name", "rating"],
+                    ["Abir", "The last day", "5"],
+                    ["Abir", "The culture map", "2"],
+                    ["Aya", "It ends with us", "4"],
+                    ["Aya", "Your heart", "4"],
+                    ["Diana", "The last day", "4"],
+                    ["Charlie", "Everyone but my self", "5"],
+                    ["Omar", "The culture map", "4"],
+                    ["Hibah", "The lord of the rings", "1"],
+                    ["Hibah", "The mountain is you", "3"],
+                    ["sarah", "The ideal life", "4"],
+                    ["Tom", "Your heart", "3"],
+                    ["justin", "It ends with us", "5"],
+                    ["Anka", "Anti fragile", "2"],
+                    ["sultan", "The culture map", "3"],
+                    ["sultan", "The ideal life", "2"],
+                    ["Maggie", "The mountain is you", "5"],
+                    ["Maggie", "Anti fragile", "3"],
+                    ["Maggie", "The last day", "4"],
+                 ]
+            writer.writerows(rows) #to write multiple rows into the CSV file at once.
+        print("CSV file created successfully!")
 
 # we need a function to Opens the CSV file,Reads all rows, and converts them into a dictionary
 
@@ -45,27 +51,28 @@ def read_data():
     try:
         with open (books_data_file, "r")  as file:
         #to read CSV files row by row as dictionaries to access each piece
-            reader = csv.Reader(file)
+            reader = csv.reader(file)
             # to not read the first  header    row because it does not contain the real data
             next(reader)
             # here the program loop through  each row in the file  to get the user name and  the book he is looking for
             for row in reader:
-                The_user_name = row[0]# the column [0] represents the user name
-                book_name = row[1] # the column [1] represents the book name
+                if len(row)<3:continue
+                    The_user_name = row[0]# the column [0] represents the user name
+                    book_name = row[1] # the column [1] represents the book name
 
-            try:
+                try:
                 # I converted the rating when it is a  string  to a valid integer 
-                rating = int(row[2])
-            except ValueError 
+                 rating = int(row[2])
+                except ValueError :
                 # and when the  rating is not a valid number  , the program should skip  the row 
-                continue
-            if The_user_name not in data: # checking if the name of the user exists in the dictionnary
-            # the program should add the user in the dictionnary if he does not exist and set the rating of the book that he picked 
-                data[The_user_name] = {}
-            data[The_user_name][book_name] = rating
+                    continue
+                if The_user_name not in data: # checking if the name of the user exists in the dictionnary
+                # the program should add the user in the dictionnary if he does not exist and set the rating of the book that he picked 
+                     data[The_user_name] = {}
+                data[The_user_name][book_name] = rating
 
     except FileNotFoundError:
-        print("File not found.Try again")
+        print("File not found.Try again")   
 
     return data
 # the user will select a random book in the dataset
@@ -78,25 +85,25 @@ def select_random_books(data,num=5):
     #num=the number of book that the user can pick
     #i used min to make sure that teh user will not pick  more than the books that exists 
     num = min(num, len(books)) 
-    select_random_books(random.sample(num)) # elect the random number of books from the list
+    random_books=random.sample(books,num) # select the random number of books from the list
 
-    return  select_random_books()
+    return  random_books
 
 
 # this function will ask the user to rate these books from 1 to 5
 def collect_ratings(random_books):
     The_user_rating={} # this empty dictionnary to store teh user ratings 
-    print("Rate these books from(1-5)")
+    
     for book_name in  random_books:
         while True: # it keeps repeating until teh user enter a valid  rating
-            rating=int(input("Enter your rating:"))
+            rating=int(input(f"Enter your rating for this book:'{book_name}': ")) # show the book name so the user can rate it 
             if rating >=1 and rating<=5:            # to check that the rating is between 1 and 5 
                 print("Thank you :)")
                 The_user_rating [book_name]= rating
                 break
             else:
                 print(":( Try again.The number is invalid")
-           
+            
     return  The_user_rating
 #This function compares the ratings of the new user with the existing users by checking common books
 # calculates the difference between the users ratings.
@@ -125,11 +132,12 @@ def books_recommendation(data,The_user_rating):
     recommended_books=[]                     # this list to store the recommended books
     similar=find_similar_users(data,The_user_rating) # stores  the result of the previous function 
     for The_user_name in similar:  # to check the common books
-            if similar [The_user_name]<=1.5: # TO PICK similar users
+            if similar [The_user_name]<=2.5: # TO PICK similar users
                 for book_name in  data[The_user_name]:    # loop through all the books that exist in the data
                     if book_name not in The_user_rating:  # check if the book exist in the books that the user rates
                         if book_name not in recommended_books: # check if the book exist in the books that has been recommmended
                             recommended_books.append(book_name)
+    
 
     return recommended_books
 
@@ -159,12 +167,65 @@ def book_visualization(data):
         books.append(book_name)     #add each book  to the books list
         ratings.append(The_avg_ratings[book_name]) # add the average rating of books to the rating list
     positions=range(len(books))           # to create the position of each book in the graph
-    plt.bar(positions,ratings)            # draws bars by using x and y  axis
+    plt.bar(positions,ratings)            # draws bars by using x and y  axis and rotate  label for better readability
     plt.xticks(positions,books,rotation=45) # to replace the numbers withe book names
     plt.xlabel("books in data")                         # label the x axis with as
-    plt.ylabel("The avearge rating")                          #label the y axis with as
-    plt.title("Book recommendation statistiques")                         # the title of the graph 
+    plt.ylabel("The average rating")                          #label the y axis with as
+    plt.title("Book recommendation statistics")                         # the title of the graph 
     plt.show()                              # to show the final graph 
+
+   
+
+    # this function that call back the functions that i used before to run the code
+if __name__=="__main__":
+        
+        create_file()
+        
+        data=read_data()
+        while True:
+            The_user_name = input("Welcome! Please enter your name: ")
+        
+            if The_user_name.strip() == "":
+             print("Name cannot be empty. Try again.")
+            elif The_user_name.isdigit():
+                print("Name cannot be numbers only. Try again.")
+            else:
+                break
+        print("DATA:", data)
+        random_books=select_random_books(data)
+        
+        print(f"Hello,{The_user_name}!")
+        print("PLEASE, we need  you to rate the following books from(1-5):")
+         
+        for book in  random_books:
+            print("-",book)
+        user_rating=collect_ratings(random_books)
+        print(f"You rated {random_books} as {user_rating}")
+        similarity_scores = find_similar_users(data, user_rating)
+        print("\nSimilarity scores with other users:",similarity_scores)
+        
+        recommendations=books_recommendation(data,user_rating)
+        if recommendations:
+            print("\nbooks recommended for you:" ,recommendations)
+        else:
+            print("\nNo new recommendations found based on your ratings.")    
+        book_visualization(data)
+        
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
     
 
 
