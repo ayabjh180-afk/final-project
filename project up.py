@@ -16,7 +16,8 @@ def create_file():
        with open(books_data_file, "r"):
             pass
     except FileNotFoundError:
-        with open(books_data_file, "w", newline="") as file:
+       
+        with open(books_data_file, "w", newline="",encoding="utf-8") as file:
         # to write data in a correct way into a csv file
             writer = csv.writer(file)
 
@@ -56,9 +57,10 @@ def read_data():
             next(reader)
             # here the program loop through  each row in the file  to get the user name and  the book he is looking for
             for row in reader:
-                if len(row)<3:continue
-                    The_user_name = row[0]# the column [0] represents the user name
-                    book_name = row[1] # the column [1] represents the book name
+                if len(row)<3: # continue
+                    continue
+                The_user_name = row[0]# the column [0] represents the user name
+                book_name = row[1] # the column [1] represents the book name
 
                 try:
                 # I converted the rating when it is a  string  to a valid integer 
@@ -96,13 +98,17 @@ def collect_ratings(random_books):
     
     for book_name in  random_books:
         while True: # it keeps repeating until teh user enter a valid  rating
-            rating=int(input(f"Enter your rating for this book:'{book_name}': ")) # show the book name so the user can rate it 
-            if rating >=1 and rating<=5:            # to check that the rating is between 1 and 5 
-                print("Thank you :)")
-                The_user_rating [book_name]= rating
-                break
-            else:
-                print(":( Try again.The number is invalid")
+            try:
+                rating=int(input(f"Enter your rating for this book:'{book_name}': ")) # show the book name so the user can rate it 
+                
+                if  1<=rating<=5:            # to check that the rating is between 1 and 5 
+                    print("Thank you :)")
+                    The_user_rating [book_name]= rating
+                    break
+                else:
+                    print(":( Try again.The number must be between 1 and 5.")
+            except ValueError:
+                print("Invalid input. Please enter a number between 1 and 5")
             
     return  The_user_rating
 #This function compares the ratings of the new user with the existing users by checking common books
@@ -134,7 +140,7 @@ def books_recommendation(data,The_user_rating):
     for The_user_name in similar:  # to check the common books
             if similar [The_user_name]<=2.5: # TO PICK similar users
                 for book_name in  data[The_user_name]:    # loop through all the books that exist in the data
-                    if book_name not in The_user_rating:  # check if the book exist in the books that the user rates
+                     # check if the book exist in the books that the user rates
                         if book_name not in recommended_books: # check if the book exist in the books that has been recommmended
                             recommended_books.append(book_name)
     
@@ -191,7 +197,7 @@ if __name__=="__main__":
                 print("Name cannot be numbers only. Try again.")
             else:
                 break
-        print("DATA:", data)
+        
         random_books=select_random_books(data)
         
         print(f"Hello,{The_user_name}!")
