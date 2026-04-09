@@ -50,7 +50,7 @@ def read_data():
     data = {} # using an empty dictionnary to store users, books, and ratings
 # (www.w3schools.com, n.d.)
     try:
-        with open (books_data_file, "r")  as file:
+        with open (books_data_file, "r", encoding="utf-8")  as file:
         #to read CSV files row by row as dictionaries to access each piece
         ## DictReader uses the first row as keys for a dictionary
             reader = csv.DictReader(file)
@@ -66,6 +66,7 @@ def read_data():
                     rating = int(row["rating"])
                     if The_user_name not in data:  # checking if the name of the user exists in the dictionnary
                         data[The_user_name]={}   # the program should add the user in the dictionnary if he does not exist and set the rating of the book that he picked
+                        data[The_user_name][book_name] = rating
                 except ValueError :
                 # and when the  rating is not a valid number  , the program should skip  the row 
                     continue
@@ -153,14 +154,13 @@ def books_recommendation(data,similarity,The_user_rating):
                         #If it's new, or if this person liked it more, update the  recommendations
                         # If we find the same book from multiple similar people, we keep the highest rating
                         if book_name not in recommended_books or rating_value >recommended_books[book_name] :## check if the book exist in the books that the user ratings
-                            
-                                 recommended_books.append(book_name)
+                            recommended_books[book_name]=rating_value
 
     #  Sort the results based on the rating (the value)
     # .items() turns the dictionary into a list of pairs so we can sort them
     # key=lambda x: x[1] is used to sort by the rating, not the name
     # reverse=True  to put the highest ratings (5s) at the very top
-    
+
     sorted_list = sorted(recommended_books.items(), key=lambda x: x[1], reverse=True)
 
 
@@ -172,8 +172,15 @@ def books_recommendation(data,similarity,The_user_rating):
 
 # this function help the user to see the statistiques of each book
 def book_visualization(data):
+
+    # if the data is empty, don't try to draw a graph
+    if  not  data:
+        print("No data available to visualize.")
+        return
+    
     total_ratings={}     # This empty dictionary to store the total ratings of books  
     books_count={}            # This empty dictionary to count how many times the book was rated
+
     for The_user_name in data:   # looping through each user
         for book_name in data[The_user_name]: # looping through the rated books by the each user
             rating=data[The_user_name][book_name]
@@ -182,61 +189,115 @@ def book_visualization(data):
                 books_count[book_name]=0
             total_ratings[book_name]+=rating             # to calculate the total ratings of books
             books_count[book_name]+=1                    # counting  how many times the books  has been rated
+
     The_avg_ratings={}                 # creating an empty dictionary to store the average of the ratings of books
     for book_name in total_ratings:    #loop through each book in total ratings of the dictionary
         The_avg_ratings[book_name]=total_ratings[book_name]/books_count[book_name]    # calculating the average
+
     sorted_books=sorted(The_avg_ratings.keys())      ## sort the books name alphabetically
     books=[]                   # to store book names
     ratings=[]                # to store books ratings        
     for book_name in sorted_books: # looping through the sorted books 
         books.append(book_name)     #add each book  to the books list
-        ratings.append(The_avg_ratings[book_name]) # add the average rating of books to the rating list
+        ratings.append(books_count[book_name]) # add the average rating of books to the rating list
+    
     positions=range(len(books))           # to create the position of each book in the graph
-    plt.bar(positions,ratings)            # draws bars by using x and y  axis and rotate  label for better readability
-    plt.xticks(positions,books,rotation=45) # to replace the numbers withe book names
+    plt.bar(positions, ratings, color='skyblue', edgecolor='navy')# # draws bars by using x and y  axis and rotate  label for better readability
+    plt.xticks(positions,books,rotation=45,ha='right') # Replace X-axis numbers with book names and rotate 45 degrees to prevent overlapping
     plt.xlabel("books in data")                         # label the x axis with as
-    plt.ylabel("The average rating")                          #label the y axis with as
+    plt.ylabel("Number of Readers")                          #label the y axis with as
     plt.title("Book recommendation statistics")                         # the title of the graph 
+    plt.tight_layout()                  #To show that  the book names aren't cut off at the bottom
     plt.show()                              # to show the final graph 
 
    
 
     # this function that call back the functions that i used before to run the code
-    if __name__=="__main__":
-        
+def main():
+            
         create_file()
-        
         data=read_data()
+        user_rating={}
+        #get the user name
         while True:
-            The_user_name = input("Welcome! Please enter your name: ")
+                # Check if name is empty or consists only of numbers to prevent errors
+                The_user_name = input("Welcome! Please enter your name: ")
+            
+                if The_user_name.strip() == "":
+                    print("Name cannot be empty. Try again.")
+                elif The_user_name.isdigit():
+                    print("Name cannot be numbers only. Try again.")
+                else:
+                    print(f"\nHello, {The_user_name}!")
+                    break
+            
+        # MENU
+        while True:
+            print("\n--- Main Menu ---")
+            print("1. Rate random books")
+            print("2. Get my recommendations")
+            print("3. Show popularity graph")   
+            print("4. Exit")
         
-            if The_user_name.strip() == "":
-             print("Name cannot be empty. Try again.")
-            elif The_user_name.isdigit():
-                print("Name cannot be numbers only. Try again.")
-            else:
+            choice = input("Enter your choice (1-4): ")
+
+            if choice == "1":
+                random_books = select_random_books(data)
+                # This calls the  function to get the ratings dictionary
+                print("\nPlease rate these books (1-5):")
+                user_rating = collect_ratings(random_books)
+                if The_user_name not in data:
+                    data[The_user_name] = {}
+                for book, rate in user_rating.items():
+                     data[The_user_name][book] = rate
+                print("Ratings saved :)!")
+               
+            elif choice == "2":
+                if not user_rating:
+                    print("!! Please rate books first (Option 1).")
+                else:
+                    # Calculate how similar this user is to others in the database
+                    similarity = find_similar_users(data, user_rating)
+                    # Generate sorted list of books based on similar tastes
+                    recommendations = books_recommendation(data, similarity, user_rating)
+                
+                    if recommendations:
+                        print("\n" + "="*30)
+                        print("  TOP RECOMMENDATIONS for you  ")
+                        print("="*30)
+                        for book_name, rating_value in recommendations:
+                            print(f" {book_name} | Predicted Rating: {rating_value}/5")
+                        print("="*30)
+                    else:
+                       print("\nNo new recommendations found. Try rating more books!")
+            elif choice == "3":
+                book_visualization(data)
+
+            elif choice == "4":
+                print(f"\nThank you for using the system. Goodbye, {The_user_name}!")
                 break
         
-        random_books=select_random_books(data)
-        
-        print(f"Hello,{The_user_name}!")
-        print("PLEASE, we need  you to rate the following books from(1-5):")
-         
-        for book in  random_books:
-            print("-",book)
-        user_rating=collect_ratings(random_books)
-        print(f"You rated {random_books} as {user_rating}")
-        similarity_scores = find_similar_users(data, user_rating)
-        print("\nSimilarity scores with other users:",similarity_scores)
-        
-        recommendations=books_recommendation(data,user_rating)
-        if recommendations:
-            print("\nbooks recommended for you:" ,recommendations)
-        else:
-            print("\nNo new recommendations found based on your ratings.")    
-        book_visualization(data)
-        
+if __name__ == "__main__":
+        main()
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
+        
 
 
 
@@ -247,19 +308,4 @@ def book_visualization(data):
 
 
 
-
-
-
- 
     
-
-
-
-
-
-
-
-
-
-
- 
