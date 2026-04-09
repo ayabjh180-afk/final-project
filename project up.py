@@ -52,16 +52,14 @@ def read_data():
     try:
         with open (books_data_file, "r")  as file:
         #to read CSV files row by row as dictionaries to access each piece
-            reader = csv.reader(file)
+        ## DictReader uses the first row as keys for a dictionary
+            reader = csv.DictReader(file)
             # to not read the first  header    row because it does not contain the real data
-            next(reader)
+            
             # here the program loop through  each row in the file  to get the user name and  the book he is looking for
             for row in reader:
-                if len(row)<3: # continue
-                    continue
-                The_user_name = row[0]# the column [0] represents the user name
-                book_name = row[1] # the column [1] represents the book name
-
+                The_user_name = row["The_user_name"]
+                book_name = row["book_name"] 
                 try:
                 # I converted the rating when it is a  string  to a valid integer 
                  rating = int(row[2])
@@ -138,9 +136,9 @@ def books_recommendation(data,The_user_rating):
     recommended_books=[]                     # this list to store the recommended books
     similar=find_similar_users(data,The_user_rating) # stores  the result of the previous function 
     for The_user_name in similar:  # to check the common books
-            if similar [The_user_name]<=2.5: # TO PICK similar users
+            if similar [The_user_name]<=4: # TO PICK similar users
                 for book_name in  data[The_user_name]:    # loop through all the books that exist in the data
-                     # check if the book exist in the books that the user rates
+                    if book_name not in The_user_rating and book_name not in recommended_books :## check if the book exist in the books that the user ratings
                         if book_name not in recommended_books: # check if the book exist in the books that has been recommmended
                             recommended_books.append(book_name)
     
