@@ -13,7 +13,7 @@ books_data_file = "book_ratings.csv"
 def create_file():
     try:
         # Check if file exists
-       with open(books_data_file, "r"):
+       with open(books_data_file, "r",encoding="utf-8") as file :
             pass
     except FileNotFoundError:
        
@@ -55,37 +55,38 @@ def read_data():
         ## DictReader uses the first row as keys for a dictionary
             reader = csv.DictReader(file)
             # to not read the first  header    row because it does not contain the real data
-            
             # here the program loop through  each row in the file  to get the user name and  the book he is looking for
             for row in reader:
+                if not row["The_user_name"] or not row["book_name"]:
+                    continue
                 The_user_name = row["The_user_name"]
                 book_name = row["book_name"] 
                 try:
                 # I converted the rating when it is a  string  to a valid integer 
-                 rating = int(row[2])
+                    rating = int(row["rating"])
+                    if The_user_name not in data:  # checking if the name of the user exists in the dictionnary
+                        data[The_user_name]={}   # the program should add the user in the dictionnary if he does not exist and set the rating of the book that he picked
                 except ValueError :
                 # and when the  rating is not a valid number  , the program should skip  the row 
                     continue
-                if The_user_name not in data: # checking if the name of the user exists in the dictionnary
-                # the program should add the user in the dictionnary if he does not exist and set the rating of the book that he picked 
-                     data[The_user_name] = {}
-                data[The_user_name][book_name] = rating
-
+          
     except FileNotFoundError:
-        print("File not found.Try again")   
+        print("Error: The data file was not found.")   
 
     return data
 # the user will select a random book in the dataset
 def select_random_books(data,num=5):
-    books=[] # using an empty list to store the random books 
+    all_books=set() ## Using a set automatically prevents duplicate book names
     for The_user_name in data: # loop through each user name
         for book_name in data[The_user_name]: # another loop to loop through each book has been picked by the user
-            if book_name not in books:     # checks if the name of the book exists in the list
-                books.append(book_name)    # if not selected, it should be added to the list
-    #num=the number of book that the user can pick
-    #i used min to make sure that teh user will not pick  more than the books that exists 
-    num = min(num, len(books)) 
-    random_books=random.sample(books,num) # select the random number of books from the list
+            all_books.add(book_name)    # if not selected, it should be added to the list
+    #convert to a list only at the end so random.sample can read it
+    books_list=list(all_books)
+    if not  books_list:
+        return []
+    #I used min to make sure that teh user will not pick  more than the books that exists 
+    num = min(num, len(books_list))  ##num=the number of book that the user can pick
+    random_books=random.sample(books_list,num) # select the random number of books from the list
 
     return  random_books
 
@@ -97,18 +98,21 @@ def collect_ratings(random_books):
     for book_name in  random_books:
         while True: # it keeps repeating until teh user enter a valid  rating
             try:
-                rating=int(input(f"Enter your rating for this book:'{book_name}': ")) # show the book name so the user can rate it 
+                rating=int(input(f"Enter your rating for this book:'{book_name}'(1-5): ")) # show the book name so the user can rate it 
                 
                 if  1<=rating<=5:            # to check that the rating is between 1 and 5 
                     print("Thank you :)")
                     The_user_rating [book_name]= rating
-                    break
+                    break   #to move to the next book 
                 else:
                     print(":( Try again.The number must be between 1 and 5.")
+
             except ValueError:
                 print("Invalid input. Please enter a number between 1 and 5")
             
     return  The_user_rating
+
+
 #This function compares the ratings of the new user with the existing users by checking common books
 # calculates the difference between the users ratings.
 def find_similar_users(data,The_user_rating):
@@ -181,7 +185,7 @@ def book_visualization(data):
    
 
     # this function that call back the functions that i used before to run the code
-if __name__=="__main__":
+    if __name__=="__main__":
         
         create_file()
         
