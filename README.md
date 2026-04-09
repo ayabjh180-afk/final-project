@@ -69,3 +69,4 @@ Python Software Foundation (2020). csv — CSV File Reading and Writing — Pyth
 matplotlib (2024). Pyplot tutorial — Matplotlib 3.8.0 documentation. [online] matplotlib.org. Available at: https://matplotlib.org/stable/tutorials/pyplot.html.
 Python (2025). random — Generate pseudo-random numbers — Python 3.8.2 documentation. [online] docs.python.org. Available at: https://docs.python.org/3/library/random.html.
 www.w3schools.com. (n.d.). Python int() Function. [online] Available at: https://www.w3schools.com/python/ref_func_int.asp.
+docs.python.org. (n.d.). io — Core tools for working with streams — Python 3.8.3rc1 documentation. [online] Available at: https://docs.python.org/3/library/io.html.

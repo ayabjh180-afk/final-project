@@ -117,15 +117,17 @@ def collect_ratings(random_books):
 # calculates the difference between the users ratings.
 def find_similar_users(data,The_user_rating):
     similarity={} # i create an empty dictionary to store the user name and  the similarity score
+
     for The_user_name in data:
         total=0   # to count the total difference
         books_count=0 # to calculate how many common books 
+        
         for book_name in The_user_rating:  # to check the common books
             if book_name in data[The_user_name]:
-                The_existinguser_rating=data[The_user_name][book_name]          #the rating of the existing user
-                The_newuser_rating=The_user_rating[book_name]    # the rating of the new user
+                The_user_in_data=data[The_user_name][book_name]          #the rating of the existing user
+                The_new_user_rating=The_user_rating[book_name]    # the rating of the new user
                 # now the program will calculate the diference to see the similarity between two different users
-                difference=abs(The_existinguser_rating-The_newuser_rating) # abs avoid negative numbers
+                difference=abs(The_user_in_data-The_new_user_rating) # abs avoid negative numbers
                 total+=difference # to add the difference
                 books_count+=1
             
@@ -136,16 +138,22 @@ def find_similar_users(data,The_user_rating):
     return similarity
 #This function will suggest books to the user 
 
-def books_recommendation(data,The_user_rating):
+def books_recommendation(data,similarity,The_user_rating):
     recommended_books=[]                     # this list to store the recommended books
-    similar=find_similar_users(data,The_user_rating) # stores  the result of the previous function 
-    for The_user_name in similar:  # to check the common books
-            if similar [The_user_name]<=4: # TO PICK similar users
+
+    for The_user_name in similarity:  # to check the common books
+            if similarity [The_user_name]<=2.5: # TO PICK similar users
                 for book_name in  data[The_user_name]:    # loop through all the books that exist in the data
-                    if book_name not in The_user_rating and book_name not in recommended_books :## check if the book exist in the books that the user ratings
-                        if book_name not in recommended_books: # check if the book exist in the books that has been recommmended
-                            recommended_books.append(book_name)
-    
+                    if book_name not in The_user_rating:
+                        # We store the book's rating to help us sort later
+                        # (This takes the rating from the person in our data)
+
+                        rating_value = data[The_user_name][book_name]
+                        # If we find the same book from multiple similar people, we keep the highest rating
+                        if book_name not in recommended_books or rating_value >recommended_books[book_name] :## check if the book exist in the books that the user ratings
+                            
+                                 recommended_books.append(book_name)
+
 
     return recommended_books
 
