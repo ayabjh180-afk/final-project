@@ -139,7 +139,7 @@ def find_similar_users(data,The_user_rating):
 #This function will suggest books to the user 
 
 def books_recommendation(data,similarity,The_user_rating):
-    recommended_books=[]                     # this list to store the recommended books
+    recommended_books={}                   # this dictionary to store the recommended books
 
     for The_user_name in similarity:  # to check the common books
             if similarity [The_user_name]<=2.5: # TO PICK similar users
@@ -149,13 +149,22 @@ def books_recommendation(data,similarity,The_user_rating):
                         # (This takes the rating from the person in our data)
 
                         rating_value = data[The_user_name][book_name]
+                        #Check if we already found this book from another similar person
+                        #If it's new, or if this person liked it more, update the  recommendations
                         # If we find the same book from multiple similar people, we keep the highest rating
                         if book_name not in recommended_books or rating_value >recommended_books[book_name] :## check if the book exist in the books that the user ratings
                             
                                  recommended_books.append(book_name)
 
+    #  Sort the results based on the rating (the value)
+    # .items() turns the dictionary into a list of pairs so we can sort them
+    # key=lambda x: x[1] is used to sort by the rating, not the name
+    # reverse=True  to put the highest ratings (5s) at the very top
+    
+    sorted_list = sorted(recommended_books.items(), key=lambda x: x[1], reverse=True)
 
-    return recommended_books
+
+    return sorted_list
 
 
 
