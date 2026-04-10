@@ -1,5 +1,5 @@
 ##IY499 Practical Programming Assignment
-##Example Project 2: Book Recommendation System#
+##Example Project 2: Book Recommendation System
 # (Python Software Foundation, 2020)
 import csv # to store and read data from the file 
 #(Python, 2025)
@@ -9,6 +9,8 @@ import  matplotlib.pyplot as plt # help to create graphs which helps the user to
 
 books_data_file = "book_ratings.csv"
 
+#(Python, n.d.)
+#(Python, 2024)
 
 def create_file():
     try:
@@ -49,6 +51,7 @@ def create_file():
 def read_data():
     data = {} # using an empty dictionnary to store users, books, and ratings
 # (www.w3schools.com, n.d.)
+# (Google.com, 2023)
     try:
         with open (books_data_file, "r", encoding="utf-8")  as file:
         #to read CSV files row by row as dictionaries to access each piece
@@ -138,7 +141,8 @@ def find_similar_users(data,The_user_rating):
 
     return similarity
 #This function will suggest books to the user 
-
+# (Python documentation, n.d.)
+#(Python, n.d.)
 def books_recommendation(data,similarity,The_user_rating):
     recommended_books={}                   # this dictionary to store the recommended books
 
@@ -171,6 +175,8 @@ def books_recommendation(data,similarity,The_user_rating):
 
 
 # this function help the user to see the statistiques of each book
+# (matplotlib.org, n.d.)
+#(GeeksforGeeks, 2024)
 def book_visualization(data):
 
     # if the data is empty, don't try to draw a graph
@@ -213,6 +219,7 @@ def book_visualization(data):
    
 
     # this function that call back the functions that i used before to run the code
+#(docs.python.org, n.d.)
 def main():
             
         create_file()

@@ -30,7 +30,7 @@ Installation:
 To run the app locally:
 1. Make sure Python 3.12 is installed.
 2. Install required dependencies:
-   pip install pygame
+   pip install matplotlib
 
 How to Run the App:
 1. Open terminal/command prompt in the project folder.
@@ -59,7 +59,7 @@ Project Structure:
 ProjectFolder/
 ├── project_up.py:The main file that runs the program and contains all the code.
 ├── book_ratings.csv : The database  file that  stores all the book titles, usernames, and ratings           
-├── requirements.txt:requirements.txt: Lists the required library (matplotlib).
+├── requirements.txt: Lists the required library (matplotlib).
 └── README.txt :Contains the project report and explanation.         
 
 Testing:
